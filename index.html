@@ -307,7 +307,7 @@
             font-size: 0.9em;
         }
         
-        .details-modal, .edit-modal {
+        .details-modal, .edit-modal, .popup-modal {
             position: fixed;
             top: 0;
             left: 0;
@@ -325,9 +325,10 @@
             border-radius: 15px;
             padding: 30px;
             width: 90%;
-            max-width: 600px;
+            max-width: 400px;
             max-height: 80vh;
             overflow-y: auto;
+            text-align: center;
         }
         
         .modal-header {
@@ -350,6 +351,19 @@
             padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
+        }
+        
+        .popup-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .popup-success {
+            color: #28a745;
+        }
+        
+        .popup-error {
+            color: #dc3545;
         }
         
         .details-list {
@@ -420,7 +434,6 @@
                 <input type="password" id="password" placeholder="أدخل كلمة المرور">
             </div>
             <button class="btn" onclick="login()">دخول</button>
-            <div id="loginMessage"></div>
         </div>
 
         <!-- واجهة مسؤول نقطة الحشد -->
@@ -434,7 +447,6 @@
                 <input type="text" id="hashdNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
             </div>
             <button class="btn" onclick="registerVoter()">تسجيل ناخب</button>
-            <div id="hashdMessage"></div>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
@@ -473,7 +485,6 @@
                 <input type="text" id="maqarrNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
             </div>
             <button class="btn" onclick="registerVote()">تسجيل انتخاب</button>
-            <div id="maqarrMessage"></div>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
@@ -512,7 +523,6 @@
                 <input type="text" id="sarafNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
             </div>
             <button class="btn" onclick="registerDispense()">تسجيل صرف</button>
-            <div id="sarafMessage"></div>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
@@ -599,7 +609,6 @@
                     <input type="text" id="locationName" placeholder="اسم النقطة أو المقر">
                 </div>
                 <button class="btn" onclick="addUser()">إضافة مستخدم</button>
-                <div id="adminMessage"></div>
             </div>
 
             <div class="user-list">
@@ -675,7 +684,15 @@
                 <input type="text" id="editLocationName" placeholder="اسم النقطة أو المقر">
             </div>
             <button class="btn" onclick="updateUser()">حفظ التعديلات</button>
-            <div id="editUserMessage"></div>
+        </div>
+    </div>
+
+    <!-- Popup Message Modal -->
+    <div id="popupMessage" class="popup-modal hidden">
+        <div class="modal-content">
+            <div id="popupIcon" class="popup-icon"></div>
+            <h3 id="popupText"></h3>
+            <button class="btn" onclick="closePopup()" style="margin-top: 20px;">موافق</button>
         </div>
     </div>
 
@@ -697,6 +714,29 @@
             document.getElementById(inputId).value = '';
         }
 
+        // وظائف الرسائل المنبثقة
+        function showPopup(message, type = 'success') {
+            const popup = document.getElementById('popupMessage');
+            const popupIcon = document.getElementById('popupIcon');
+            const popupText = document.getElementById('popupText');
+            
+            popupIcon.className = 'popup-icon';
+            if (type === 'success') {
+                popupIcon.classList.add('popup-success');
+                popupIcon.innerHTML = '✅';
+            } else {
+                popupIcon.classList.add('popup-error');
+                popupIcon.innerHTML = '❌';
+            }
+            
+            popupText.textContent = message;
+            popup.classList.remove('hidden');
+        }
+
+        function closePopup() {
+            document.getElementById('popupMessage').classList.add('hidden');
+        }
+
         // بيانات النظام
         let systemData = {
             users: {
@@ -714,14 +754,6 @@
         };
 
         // وظائف مساعدة
-        function showMessage(elementId, message, type = 'success') {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="message ${type}">${message}</div>`;
-            setTimeout(() => {
-                element.innerHTML = '';
-            }, 5000);
-        }
-
         function validateNationalId(id) {
             return /^\d{14}$/.test(id);
         }
@@ -743,7 +775,7 @@
             const password = document.getElementById('password').value;
 
             if (!username || !password) {
-                showMessage('loginMessage', 'يرجى إدخال اسم المستخدم وكلمة المرور', 'error');
+                showPopup('يرجى إدخال اسم المستخدم وكلمة المرور', 'error');
                 return;
             }
 
@@ -776,7 +808,7 @@
                         break;
                 }
             } else {
-                showMessage('loginMessage', 'اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+                showPopup('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
             }
         }
 
@@ -795,14 +827,14 @@
             const nationalId = document.getElementById('hashdNationalId').value;
             
             if (!validateNationalId(nationalId)) {
-                showMessage('hashdMessage', 'الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
+                showPopup('الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
                 return;
             }
 
             // التحقق من التسجيل المسبق
             const alreadyRegistered = systemData.registrations.find(r => r.nationalId === nationalId);
             if (alreadyRegistered) {
-                showMessage('hashdMessage', `تم التسجيل مسبقًا الساعة ${alreadyRegistered.timestamp}`, 'error');
+                showPopup(`تم التسجيل مسبقًا الساعة ${alreadyRegistered.timestamp}`, 'error');
                 return;
             }
 
@@ -814,7 +846,7 @@
             };
 
             systemData.registrations.push(registration);
-            showMessage('hashdMessage', 'تم تسجيل الناخب بنجاح');
+            showPopup('تم تسجيل الناخب بنجاح');
             document.getElementById('hashdNationalId').value = '';
             updateHashdCounter();
         }
@@ -830,21 +862,21 @@
             const nationalId = document.getElementById('maqarrNationalId').value;
             
             if (!validateNationalId(nationalId)) {
-                showMessage('maqarrMessage', 'الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
+                showPopup('الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
                 return;
             }
 
             // التحقق من التسجيل في الحشد
             const registered = systemData.registrations.find(r => r.nationalId === nationalId);
             if (!registered) {
-                showMessage('maqarrMessage', 'لم يتم التسجيل في نقطة الحشد', 'error');
+                showPopup('لم يتم التسجيل في نقطة الحشد', 'error');
                 return;
             }
 
             // التحقق من الانتخاب المسبق
             const alreadyVoted = systemData.votes.find(v => v.nationalId === nationalId);
             if (alreadyVoted) {
-                showMessage('maqarrMessage', `تم الانتخاب مسبقًا الساعة ${alreadyVoted.timestamp}`, 'error');
+                showPopup(`تم الانتخاب مسبقًا الساعة ${alreadyVoted.timestamp}`, 'error');
                 return;
             }
 
@@ -856,7 +888,7 @@
             };
 
             systemData.votes.push(vote);
-            showMessage('maqarrMessage', 'تم تسجيل الانتخاب بنجاح');
+            showPopup('تم تسجيل الانتخاب بنجاح');
             document.getElementById('maqarrNationalId').value = '';
             updateMaqarrCounter();
         }
@@ -872,21 +904,21 @@
             const nationalId = document.getElementById('sarafNationalId').value;
             
             if (!validateNationalId(nationalId)) {
-                showMessage('sarafMessage', 'الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
+                showPopup('الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
                 return;
             }
 
             // التحقق من الانتخاب
             const voted = systemData.votes.find(v => v.nationalId === nationalId);
             if (!voted) {
-                showMessage('sarafMessage', 'لم يقم بالانتخاب', 'error');
+                showPopup('لم يقم بالانتخاب', 'error');
                 return;
             }
 
             // التحقق من الصرف المسبق
             const alreadyDispensed = systemData.dispenses.find(d => d.nationalId === nationalId);
             if (alreadyDispensed) {
-                showMessage('sarafMessage', `تم الصرف مسبقًا الساعة ${alreadyDispensed.timestamp}`, 'error');
+                showPopup(`تم الصرف مسبقًا الساعة ${alreadyDispensed.timestamp}`, 'error');
                 return;
             }
 
@@ -898,7 +930,7 @@
             };
 
             systemData.dispenses.push(dispense);
-            showMessage('sarafMessage', 'تم تسجيل الصرف بنجاح');
+            showPopup('تم تسجيل الصرف بنجاح');
             document.getElementById('sarafNationalId').value = '';
             updateSarafCounter();
         }
@@ -930,12 +962,12 @@
             const locationName = document.getElementById('locationName').value;
 
             if (!username || !password || !locationName) {
-                showMessage('adminMessage', 'يرجى ملء جميع الحقول', 'error');
+                showPopup('يرجى ملء جميع الحقول', 'error');
                 return;
             }
 
             if (systemData.users[username]) {
-                showMessage('adminMessage', 'اسم المستخدم موجود مسبقًا', 'error');
+                showPopup('اسم المستخدم موجود مسبقًا', 'error');
                 return;
             }
 
@@ -945,7 +977,7 @@
                 location: locationName
             };
 
-            showMessage('adminMessage', 'تم إضافة المستخدم بنجاح');
+            showPopup('تم إضافة المستخدم بنجاح');
             
             // إعادة تعيين النموذج
             document.getElementById('newUsername').value = '';
@@ -988,7 +1020,7 @@
         // تعديل مستخدم
         function editUser(username) {
             if (username === 'مدير') {
-                alert('لا يمكن تعديل حساب المدير');
+                showPopup('لا يمكن تعديل حساب المدير', 'error');
                 return;
             }
             
@@ -1011,7 +1043,7 @@
             const locationName = document.getElementById('editLocationName').value;
 
             if (!locationName) {
-                showMessage('editUserMessage', 'يرجى إدخال اسم الموقع', 'error');
+                showPopup('يرجى إدخال اسم الموقع', 'error');
                 return;
             }
 
@@ -1022,7 +1054,7 @@
                 systemData.users[username].password = password;
             }
 
-            showMessage('editUserMessage', 'تم تعديل المستخدم بنجاح');
+            showPopup('تم تعديل المستخدم بنجاح');
             
             setTimeout(() => {
                 closeEditModal();
@@ -1039,13 +1071,13 @@
         // حذف مستخدم
         function deleteUser(username) {
             if (username === 'مدير') {
-                alert('لا يمكن حذف حساب المدير');
+                showPopup('لا يمكن حذف حساب المدير', 'error');
                 return;
             }
             
             if (confirm(`هل أنت متأكد من حذف المستخدم: ${username}؟`)) {
                 delete systemData.users[username];
-                showMessage('adminMessage', 'تم حذف المستخدم بنجاح');
+                showPopup('تم حذف المستخدم بنجاح');
                 loadUsersList();
             }
         }
@@ -1061,7 +1093,7 @@
         // تصدير جميع البيانات (محلل البيانات)
         function exportAllData() {
             if (systemData.registrations.length === 0 && systemData.votes.length === 0 && systemData.dispenses.length === 0) {
-                alert('لا توجد بيانات للتصدير');
+                showPopup('لا توجد بيانات للتصدير', 'error');
                 return;
             }
 
@@ -1130,7 +1162,7 @@
             const filename = `تقرير_شامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
             XLSX.writeFile(wb, filename);
             
-            alert('تم تصدير جميع البيانات بنجاح');
+            showPopup('تم تصدير جميع البيانات بنجاح');
         }
 
         // تصدير التقرير الشامل (المدير)
@@ -1222,7 +1254,7 @@
             const filename = `التقرير_الإداري_الشامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
             XLSX.writeFile(wb, filename);
             
-            showMessage('adminMessage', 'تم تصدير التقرير الشامل بنجاح');
+            showPopup('تم تصدير التقرير الشامل بنجاح');
         }
 
         // تحديث بيانات المدير
