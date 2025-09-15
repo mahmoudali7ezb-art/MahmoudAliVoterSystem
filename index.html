@@ -892,4 +892,339 @@
             
             // إعادة تعيين النموذج
             document.getElementById('newUsername').value = '';
-            document.getElementById('newPassword').value
+            document.getElementById('newPassword').value = '';
+            document.getElementById('locationName').value = '';
+            
+            loadUsersList();
+        }
+
+        // حذف مستخدم
+        function deleteUser(username) {
+            if (username === 'مدير') {
+                alert('لا يمكن حذف حساب المدير');
+                return;
+            }
+            
+            if (confirm(`هل أنت متأكد من حذف المستخدم: ${username}؟`)) {
+                delete systemData.users[username];
+                showMessage('adminMessage', 'تم حذف المستخدم بنجاح');
+                loadUsersList();
+            }
+        }
+
+        // وظائف تصدير البيانات إلى Excel
+        function exportToExcel(data, filename, sheetName) {
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            XLSX.writeFile(wb, filename);
+        }
+
+        // تصدير جميع البيانات (محلل البيانات)
+        function exportAllData() {
+            if (systemData.registrations.length === 0 && systemData.votes.length === 0 && systemData.dispenses.length === 0) {
+                alert('لا توجد بيانات للتصدير');
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            // بيانات الحشد
+            if (systemData.registrations.length > 0) {
+                const hashdData = systemData.registrations.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت التسجيل': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع النقطة': item.location
+                }));
+                const hashdWs = XLSX.utils.json_to_sheet(hashdData);
+                XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
+            }
+
+            // بيانات الانتخاب
+            if (systemData.votes.length > 0) {
+                const votesData = systemData.votes.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت الانتخاب': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع المقر': item.location
+                }));
+                const votesWs = XLSX.utils.json_to_sheet(votesData);
+                XLSX.utils.book_append_sheet(wb, votesWs, 'بيانات الانتخاب');
+            }
+
+            // بيانات الصرف
+            if (systemData.dispenses.length > 0) {
+                const dispensesData = systemData.dispenses.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت الصرف': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع النقطة': item.location
+                }));
+                const dispensesWs = XLSX.utils.json_to_sheet(dispensesData);
+                XLSX.utils.book_append_sheet(wb, dispensesWs, 'بيانات الصرف');
+            }
+
+            // الإحصائيات
+            const statsData = [{
+                'المؤشر': 'إجمالي المسجلين في الحشد',
+                'العدد': systemData.registrations.length
+            }, {
+                'المؤشر': 'إجمالي المنتخبين',
+                'العدد': systemData.votes.length
+            }, {
+                'المؤشر': 'إجمالي المصروف لهم',
+                'العدد': systemData.dispenses.length
+            }, {
+                'المؤشر': 'نسبة الإقبال على الانتخاب',
+                'العدد': systemData.registrations.length > 0 ? `${Math.round((systemData.votes.length / systemData.registrations.length) * 100)}%` : '0%'
+            }, {
+                'المؤشر': 'نسبة الصرف من المنتخبين',
+                'العدد': systemData.votes.length > 0 ? `${Math.round((systemData.dispenses.length / systemData.votes.length) * 100)}%` : '0%'
+            }];
+            
+            const statsWs = XLSX.utils.json_to_sheet(statsData);
+            XLSX.utils.book_append_sheet(wb, statsWs, 'الإحصائيات');
+
+            const filename = `تقرير_شامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
+            XLSX.writeFile(wb, filename);
+            
+            alert('تم تصدير جميع البيانات بنجاح');
+        }
+
+        // تصدير التقرير الشامل (المدير)
+        function exportCompleteReport() {
+            const wb = XLSX.utils.book_new();
+
+            // بيانات الحشد
+            if (systemData.registrations.length > 0) {
+                const hashdData = systemData.registrations.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت التسجيل': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع النقطة': item.location
+                }));
+                const hashdWs = XLSX.utils.json_to_sheet(hashdData);
+                XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
+            }
+
+            // بيانات الانتخاب
+            if (systemData.votes.length > 0) {
+                const votesData = systemData.votes.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت الانتخاب': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع المقر': item.location
+                }));
+                const votesWs = XLSX.utils.json_to_sheet(votesData);
+                XLSX.utils.book_append_sheet(wb, votesWs, 'بيانات الانتخاب');
+            }
+
+            // بيانات الصرف
+            if (systemData.dispenses.length > 0) {
+                const dispensesData = systemData.dispenses.map((item, index) => ({
+                    'الرقم التسلسلي': index + 1,
+                    'الرقم القومي': item.nationalId,
+                    'تاريخ ووقت الصرف': item.timestamp,
+                    'المستخدم': item.user,
+                    'موقع النقطة': item.location
+                }));
+                const dispensesWs = XLSX.utils.json_to_sheet(dispensesData);
+                XLSX.utils.book_append_sheet(wb, dispensesWs, 'بيانات الصرف');
+            }
+
+            // بيانات المستخدمين
+            const usersData = Object.entries(systemData.users).map(([username, user]) => {
+                const userTypes = {
+                    admin: 'مدير النظام',
+                    hashd: 'مسؤول نقطة الحشد',
+                    maqarr: 'مسؤول المقر الانتخابي',
+                    saraf: 'مسؤول نقطة الصرف',
+                    analytics: 'محلل بيانات'
+                };
+                
+                return {
+                    'اسم المستخدم': username,
+                    'نوع المستخدم': userTypes[user.type],
+                    'الموقع': user.location
+                };
+            });
+            const usersWs = XLSX.utils.json_to_sheet(usersData);
+            XLSX.utils.book_append_sheet(wb, usersWs, 'المستخدمين');
+
+            // الإحصائيات الشاملة
+            const statsData = [{
+                'المؤشر': 'إجمالي المسجلين في الحشد',
+                'العدد': systemData.registrations.length
+            }, {
+                'المؤشر': 'إجمالي المنتخبين',
+                'العدد': systemData.votes.length
+            }, {
+                'المؤشر': 'إجمالي المصروف لهم',
+                'العدد': systemData.dispenses.length
+            }, {
+                'المؤشر': 'نسبة الإقبال على الانتخاب',
+                'العدد': systemData.registrations.length > 0 ? `${Math.round((systemData.votes.length / systemData.registrations.length) * 100)}%` : '0%'
+            }, {
+                'المؤشر': 'نسبة الصرف من المنتخبين',
+                'العدد': systemData.votes.length > 0 ? `${Math.round((systemData.dispenses.length / systemData.votes.length) * 100)}%` : '0%'
+            }, {
+                'المؤشر': 'إجمالي المستخدمين',
+                'العدد': Object.keys(systemData.users).length
+            }];
+            
+            const statsWs = XLSX.utils.json_to_sheet(statsData);
+            XLSX.utils.book_append_sheet(wb, statsWs, 'الإحصائيات الشاملة');
+
+            const filename = `التقرير_الإداري_الشامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
+            XLSX.writeFile(wb, filename);
+            
+            showMessage('adminMessage', 'تم تصدير التقرير الشامل بنجاح');
+        }
+
+        // تحميل قائمة المستخدمين
+        function loadUsersList() {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = '';
+
+            for (const [username, user] of Object.entries(systemData.users)) {
+                const userTypes = {
+                    admin: 'مدير النظام',
+                    hashd: 'مسؤول نقطة الحشد',
+                    maqarr: 'مسؤول المقر الانتخابي',
+                    saraf: 'مسؤول نقطة الصرف',
+                    analytics: 'محلل بيانات'
+                };
+
+                const userItem = document.createElement('div');
+                userItem.className = 'user-item';
+                userItem.innerHTML = `
+                    <div>
+                        <strong>${username}</strong> - ${userTypes[user.type]}<br>
+                        <small>${user.location}</small>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteUser('${username}')">حذف</button>
+                `;
+                usersList.appendChild(userItem);
+            }
+        }
+
+        // تحديث بيانات المدير
+        function refreshAdminData() {
+            refreshAnalytics();
+            
+            const totalHashd = systemData.registrations.length;
+            const totalVoted = systemData.votes.length;
+            const totalDispensed = systemData.dispenses.length;
+            const turnoutRate = totalHashd > 0 ? Math.round((totalVoted / totalHashd) * 100) : 0;
+
+            document.getElementById('adminTotalHashd').textContent = totalHashd;
+            document.getElementById('adminTotalVoted').textContent = totalVoted;
+            document.getElementById('adminTotalDispensed').textContent = totalDispensed;
+            document.getElementById('adminTurnoutRate').textContent = turnoutRate + '%';
+        }
+
+        // إظهار التفاصيل عند النقر على البطاقات
+        function showDetails(type) {
+            const modal = document.getElementById('detailsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            
+            let data = [];
+            let title = '';
+            
+            if (type === 'hashd') {
+                title = 'تفاصيل المسجلين في نقاط الحشد';
+                // تجميع البيانات حسب الموقع
+                const locations = {};
+                systemData.registrations.forEach(reg => {
+                    if (!locations[reg.location]) {
+                        locations[reg.location] = 0;
+                    }
+                    locations[reg.location]++;
+                });
+                
+                // تحويل إلى مصفوفة للعرض
+                data = Object.entries(locations).map(([location, count]) => ({ location, count }));
+            } 
+            else if (type === 'votes') {
+                title = 'تفاصيل المنتخبين في المقار الانتخابية';
+                // تجميع البيانات حسب الموقع
+                const locations = {};
+                systemData.votes.forEach(vote => {
+                    if (!locations[vote.location]) {
+                        locations[vote.location] = 0;
+                    }
+                    locations[vote.location]++;
+                });
+                
+                // تحويل إلى مصفوفة للعرض
+                data = Object.entries(locations).map(([location, count]) => ({ location, count }));
+            }
+            else if (type === 'dispenses') {
+                title = 'تفاصيل المصروف لهم في نقاط الصرف';
+                // تجميع البيانات حسب الموقع
+                const locations = {};
+                systemData.dispenses.forEach(dispense => {
+                    if (!locations[dispense.location]) {
+                        locations[dispense.location] = 0;
+                    }
+                    locations[dispense.location]++;
+                });
+                
+                // تحويل إلى مصفوفة للعرض
+                data = Object.entries(locations).map(([location, count]) => ({ location, count }));
+            }
+            
+            modalTitle.textContent = title;
+            
+            if (data.length === 0) {
+                modalContent.innerHTML = '<p>لا توجد بيانات للعرض</p>';
+                return;
+            }
+            
+            let html = '<div class="details-list">';
+            data.forEach(item => {
+                html += `
+                    <div class="detail-item">
+                        <span>${item.location}</span>
+                        <span><strong>${item.count}</strong></span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            modalContent.innerHTML = html;
+        }
+
+        // إغلاق النافذة المنبثقة
+        function closeModal() {
+            document.getElementById('detailsModal').classList.add('hidden');
+        }
+
+        // السماح بالضغط على Enter لتسجيل الدخول
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+
+            // التأكد من أن الرقم القومي يحتوي على أرقام فقط
+            const nationalIdInputs = document.querySelectorAll('.national-id-input');
+            nationalIdInputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
