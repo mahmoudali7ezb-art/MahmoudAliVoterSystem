@@ -113,25 +113,6 @@
             width: auto;
         }
         
-        .message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-weight: bold;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
         .counter {
             background: #f8f9fa;
             padding: 20px;
@@ -284,6 +265,9 @@
 
         .keyboard-clear {
             background: #dc3545;
+            width: 100%;
+            margin-top: 10px;
+            padding: 12px;
         }
         
         .keyboard-backspace {
@@ -325,7 +309,7 @@
             border-radius: 15px;
             padding: 30px;
             width: 90%;
-            max-width: 400px;
+            max-width: 500px;
             max-height: 80vh;
             overflow-y: auto;
             text-align: center;
@@ -375,6 +359,22 @@
             justify-content: space-between;
             padding: 10px;
             border-bottom: 1px solid #f1f1f1;
+        }
+        
+        .user-details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .user-details-table th, .user-details-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        .user-details-table th {
+            background-color: #f8f9fa;
         }
         
         @media (max-width: 600px) {
@@ -444,7 +444,7 @@
             </div>
             <div class="form-group">
                 <label>الرقم القومي (14 رقم)</label>
-                <input type="text" id="hashdNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
+                <input type="text" id="hashdNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
             <button class="btn" onclick="registerVoter()">تسجيل ناخب</button>
             
@@ -465,8 +465,8 @@
                 <div class="keyboard-middle-row">
                     <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('hashdNationalId')">⌫</button>
                     <button class="keyboard-btn keyboard-zero" onclick="addToInput('hashdNationalId', '0')">0</button>
-                    <button class="keyboard-btn keyboard-clear" onclick="clearInput('hashdNationalId')">مسح الكل</button>
                 </div>
+                <button class="keyboard-btn keyboard-clear" onclick="clearInput('hashdNationalId')">مسح الكل</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المسجلين</p>
@@ -482,7 +482,7 @@
             </div>
             <div class="form-group">
                 <label>الرقم القومي</label>
-                <input type="text" id="maqarrNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
+                <input type="text" id="maqarrNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
             <button class="btn" onclick="registerVote()">تسجيل انتخاب</button>
             
@@ -503,8 +503,8 @@
                 <div class="keyboard-middle-row">
                     <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('maqarrNationalId')">⌫</button>
                     <button class="keyboard-btn keyboard-zero" onclick="addToInput('maqarrNationalId', '0')">0</button>
-                    <button class="keyboard-btn keyboard-clear" onclick="clearInput('maqarrNationalId')">مسح الكل</button>
                 </div>
+                <button class="keyboard-btn keyboard-clear" onclick="clearInput('maqarrNationalId')">مسح الكل</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المنتخبين</p>
@@ -520,7 +520,7 @@
             </div>
             <div class="form-group">
                 <label>الرقم القومي</label>
-                <input type="text" id="sarafNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14" onfocus="blur()">
+                <input type="text" id="sarafNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
             <button class="btn" onclick="registerDispense()">تسجيل صرف</button>
             
@@ -541,8 +541,8 @@
                 <div class="keyboard-middle-row">
                     <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('sarafNationalId')">⌫</button>
                     <button class="keyboard-btn keyboard-zero" onclick="addToInput('sarafNationalId', '0')">0</button>
-                    <button class="keyboard-btn keyboard-clear" onclick="clearInput('sarafNationalId')">مسح الكل</button>
                 </div>
+                <button class="keyboard-btn keyboard-clear" onclick="clearInput('sarafNationalId')">مسح الكل</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المصروف لهم</p>
@@ -614,6 +614,11 @@
             <div class="user-list">
                 <h3>قائمة المستخدمين</h3>
                 <div id="usersList"></div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <h3>سجلات الدخول والخروج</h3>
+                <div id="loginLogsList"></div>
             </div>
 
             <div class="stats-grid" style="margin-top: 30px;">
@@ -688,11 +693,11 @@
     </div>
 
     <!-- Popup Message Modal -->
-    <div id="popupMessage" class="popup-modal hidden">
-        <div class="modal-content">
+    <div id="popupMessage" class="popup-modal hidden" onclick="closePopup()">
+        <div class="modal-content" onclick="event.stopPropagation()">
             <div id="popupIcon" class="popup-icon"></div>
             <h3 id="popupText"></h3>
-            <button class="btn" onclick="closePopup()" style="margin-top: 20px;">موافق</button>
+            <div id="popupDetails" style="text-align: right; margin-top: 20px;"></div>
         </div>
     </div>
 
@@ -715,10 +720,11 @@
         }
 
         // وظائف الرسائل المنبثقة
-        function showPopup(message, type = 'success') {
+        function showPopup(message, type = 'success', details = '') {
             const popup = document.getElementById('popupMessage');
             const popupIcon = document.getElementById('popupIcon');
             const popupText = document.getElementById('popupText');
+            const popupDetails = document.getElementById('popupDetails');
             
             popupIcon.className = 'popup-icon';
             if (type === 'success') {
@@ -730,7 +736,16 @@
             }
             
             popupText.textContent = message;
+            popupDetails.innerHTML = details;
+            
             popup.classList.remove('hidden');
+            
+            // إخفاء الرسالة تلقائياً بعد 3 ثواني
+            setTimeout(() => {
+                if (!popup.classList.contains('hidden')) {
+                    closePopup();
+                }
+            }, 3000);
         }
 
         function closePopup() {
@@ -749,6 +764,7 @@
             registrations: [], // تسجيلات الحشد
             votes: [], // تسجيلات الانتخاب
             dispenses: [], // تسجيلات الصرف
+            loginLogs: [], // سجلات الدخول والخروج
             currentUser: null,
             editingUser: null
         };
@@ -781,6 +797,16 @@
 
             if (systemData.users[username] && systemData.users[username].password === password) {
                 systemData.currentUser = username;
+                
+                // تسجيل عملية الدخول
+                systemData.loginLogs.push({
+                    username: username,
+                    action: 'دخول',
+                    timestamp: getCurrentDateTime(),
+                    userType: systemData.users[username].type,
+                    location: systemData.users[username].location
+                });
+                
                 hideAllPages();
                 
                 const userType = systemData.users[username].type;
@@ -788,6 +814,7 @@
                     case 'admin':
                         document.getElementById('adminPage').classList.remove('hidden');
                         loadUsersList();
+                        loadLoginLogs();
                         refreshAdminData();
                         break;
                     case 'hashd':
@@ -814,6 +841,17 @@
 
         // تسجيل الخروج
         function logout() {
+            // تسجيل عملية الخروج
+            if (systemData.currentUser) {
+                systemData.loginLogs.push({
+                    username: systemData.currentUser,
+                    action: 'خروج',
+                    timestamp: getCurrentDateTime(),
+                    userType: systemData.users[systemData.currentUser].type,
+                    location: systemData.users[systemData.currentUser].location
+                });
+            }
+            
             systemData.currentUser = null;
             hideAllPages();
             document.getElementById('loginPage').classList.remove('hidden');
@@ -831,24 +869,44 @@
                 return;
             }
 
-            // التحقق من التسجيل المسبق
-            const alreadyRegistered = systemData.registrations.find(r => r.nationalId === nationalId);
-            if (alreadyRegistered) {
-                showPopup(`تم التسجيل مسبقًا الساعة ${alreadyRegistered.timestamp}`, 'error');
-                return;
-            }
-
+            // توليد بيانات عشوائية للعرض (في نظام حقيقي، هذه البيانات ستأتي من قاعدة بيانات)
+            const citizenName = generateRandomName();
+            const randomCommittee = Math.floor(Math.random() * 20) + 1;
+            const randomList = Math.floor(Math.random() * 10) + 1;
+            
             const registration = {
                 nationalId: nationalId,
                 timestamp: getCurrentDateTime(),
                 user: systemData.currentUser,
-                location: systemData.users[systemData.currentUser].location
+                location: systemData.users[systemData.currentUser].location,
+                citizenName: citizenName,
+                committee: randomCommittee,
+                list: randomList
             };
 
             systemData.registrations.push(registration);
-            showPopup('تم تسجيل الناخب بنجاح');
+            
+            // عرض تفاصيل التسجيل
+            const details = `
+                <div style="text-align: right; direction: rtl;">
+                    <p><strong>اسم المواطن:</strong> ${citizenName}</p>
+                    <p><strong>رقم قومي:</strong> ${nationalId}</p>
+                    <p><strong>المقر الانتخابي:</strong> ${systemData.users[systemData.currentUser].location}</p>
+                    <p><strong>رقم اللجنة:</strong> ${randomCommittee}</p>
+                    <p><strong>رقم الكشف:</strong> ${randomList}</p>
+                </div>
+            `;
+            
+            showPopup('تم تسجيل المواطن بنجاح', 'success', details);
             document.getElementById('hashdNationalId').value = '';
             updateHashdCounter();
+        }
+
+        // توليد اسم عشوائي (لأغراض العرض فقط)
+        function generateRandomName() {
+            const firstNames = ['أحمد', 'محمد', 'علي', 'محمود', 'مصطفى', 'خالد', 'عمر', 'ياسين', 'إبراهيم', 'حسن'];
+            const lastNames = ['علي', 'حسن', 'إبراهيم', 'محمود', 'عبدالله', 'سعيد', 'فاروق', 'ناصر', 'شعبان', 'مرعي'];
+            return firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
         }
 
         // تحديث عداد الحشد
@@ -866,13 +924,9 @@
                 return;
             }
 
-            // التحقق من التسجيل في الحشد
-            const registered = systemData.registrations.find(r => r.nationalId === nationalId);
-            if (!registered) {
-                showPopup('لم يتم التسجيل في نقطة الحشد', 'error');
-                return;
-            }
-
+            // البحث عن التسجيل في الحشد
+            const registration = systemData.registrations.find(r => r.nationalId === nationalId);
+            
             // التحقق من الانتخاب المسبق
             const alreadyVoted = systemData.votes.find(v => v.nationalId === nationalId);
             if (alreadyVoted) {
@@ -884,11 +938,23 @@
                 nationalId: nationalId,
                 timestamp: getCurrentDateTime(),
                 user: systemData.currentUser,
-                location: systemData.users[systemData.currentUser].location
+                location: systemData.users[systemData.currentUser].location,
+                hashdPoint: registration ? registration.location : 'غير معروف'
             };
 
             systemData.votes.push(vote);
-            showPopup('تم تسجيل الانتخاب بنجاح');
+            
+            // عرض تفاصيل الانتخاب
+            const details = registration ? `
+                <div style="text-align: right; direction: rtl;">
+                    <p><strong>اسم المواطن:</strong> ${registration.citizenName}</p>
+                    <p><strong>رقم قومي:</strong> ${nationalId}</p>
+                    <p><strong>نقطة الحشد:</strong> ${registration.location}</p>
+                    <p><strong>المقر الانتخابي:</strong> ${systemData.users[systemData.currentUser].location}</p>
+                </div>
+            ` : '';
+            
+            showPopup('تم تسجيل الانتخاب بنجاح', 'success', details);
             document.getElementById('maqarrNationalId').value = '';
             updateMaqarrCounter();
         }
@@ -1010,20 +1076,123 @@
                     </div>
                     <div class="user-actions">
                         <button class="btn btn-edit" onclick="editUser('${username}')">تعديل</button>
-                        <button class="btn btn-danger" onclick="deleteUser('${username}')">حذف</button>
+                        ${username !== 'مدير' ? `<button class="btn btn-danger" onclick="deleteUser('${username}')">حذف</button>` : ''}
                     </div>
                 `;
                 usersList.appendChild(userItem);
             }
         }
 
-        // تعديل مستخدم
-        function editUser(username) {
-            if (username === 'مدير') {
-                showPopup('لا يمكن تعديل حساب المدير', 'error');
+        // تحميل سجلات الدخول
+        function loadLoginLogs() {
+            const loginLogsList = document.getElementById('loginLogsList');
+            loginLogsList.innerHTML = '';
+            
+            if (systemData.loginLogs.length === 0) {
+                loginLogsList.innerHTML = '<p>لا توجد سجلات دخول حتى الآن</p>';
                 return;
             }
             
+            const table = document.createElement('table');
+            table.className = 'user-details-table';
+            table.innerHTML = `
+                <tr>
+                    <th>اسم المستخدم</th>
+                    <th>نوع المستخدم</th>
+                    <th>الإجراء</th>
+                    <th>الوقت</th>
+                    <th>الموقع</th>
+                </tr>
+            `;
+            
+            // عرض آخر 10 سجلات فقط
+            const recentLogs = systemData.loginLogs.slice(-10).reverse();
+            
+            recentLogs.forEach(log => {
+                const userTypes = {
+                    admin: 'مدير النظام',
+                    hashd: 'مسؤول نقطة الحشد',
+                    maqarr: 'مسؤول المقر الانتخابي',
+                    saraf: 'مسؤول نقطة الصرف',
+                    analytics: 'محلل بيانات'
+                };
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.username}</td>
+                    <td>${userTypes[log.userType]}</td>
+                    <td>${log.action}</td>
+                    <td>${log.timestamp}</td>
+                    <td>${log.location}</td>
+                `;
+                table.appendChild(row);
+            });
+            
+            loginLogsList.appendChild(table);
+            
+            if (systemData.loginLogs.length > 10) {
+                const showAllBtn = document.createElement('button');
+                showAllBtn.className = 'btn';
+                showAllBtn.textContent = 'عرض جميع السجلات';
+                showAllBtn.onclick = () => showAllLoginLogs();
+                loginLogsList.appendChild(showAllBtn);
+            }
+        }
+
+        // عرض جميع سجلات الدخول
+        function showAllLoginLogs() {
+            const modal = document.getElementById('detailsModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalTitle.textContent = 'جميع سجلات الدخول والخروج';
+            
+            if (systemData.loginLogs.length === 0) {
+                modalContent.innerHTML = '<p>لا توجد سجلات دخول حتى الآن</p>';
+            } else {
+                const table = document.createElement('table');
+                table.className = 'user-details-table';
+                table.innerHTML = `
+                    <tr>
+                        <th>اسم المستخدم</th>
+                        <th>نوع المستخدم</th>
+                        <th>الإجراء</th>
+                        <th>الوقت</th>
+                        <th>الموقع</th>
+                    </tr>
+                `;
+                
+                const reversedLogs = [...systemData.loginLogs].reverse();
+                
+                reversedLogs.forEach(log => {
+                    const userTypes = {
+                        admin: 'مدير النظام',
+                        hashd: 'مسؤول نقطة الحشد',
+                        maqarr: 'مسؤول المقر الانتخابي',
+                        saraf: 'مسؤول نقطة الصرف',
+                        analytics: 'محلل بيانات'
+                    };
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${log.username}</td>
+                        <td>${userTypes[log.userType]}</td>
+                        <td>${log.action}</td>
+                        <td>${log.timestamp}</td>
+                        <td>${log.location}</td>
+                    `;
+                    table.appendChild(row);
+                });
+                
+                modalContent.innerHTML = '';
+                modalContent.appendChild(table);
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        // تعديل مستخدم
+        function editUser(username) {
             systemData.editingUser = username;
             const user = systemData.users[username];
             
@@ -1104,9 +1273,12 @@
                 const hashdData = systemData.registrations.map((item, index) => ({
                     'الرقم التسلسلي': index + 1,
                     'الرقم القومي': item.nationalId,
+                    'اسم المواطن': item.citizenName,
                     'تاريخ ووقت التسجيل': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع النقطة': item.location
+                    'موقع النقطة': item.location,
+                    'رقم اللجنة': item.committee,
+                    'رقم الكشف': item.list
                 }));
                 const hashdWs = XLSX.utils.json_to_sheet(hashdData);
                 XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
@@ -1119,7 +1291,8 @@
                     'الرقم القومي': item.nationalId,
                     'تاريخ ووقت الانتخاب': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع المقر': item.location
+                    'موقع المقر': item.location,
+                    'نقطة الحشد': item.hashdPoint
                 }));
                 const votesWs = XLSX.utils.json_to_sheet(votesData);
                 XLSX.utils.book_append_sheet(wb, votesWs, 'بيانات الانتخاب');
@@ -1174,9 +1347,12 @@
                 const hashdData = systemData.registrations.map((item, index) => ({
                     'الرقم التسلسلي': index + 1,
                     'الرقم القومي': item.nationalId,
+                    'اسم المواطن': item.citizenName,
                     'تاريخ ووقت التسجيل': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع النقطة': item.location
+                    'موقع النقطة': item.location,
+                    'رقم اللجنة': item.committee,
+                    'رقم الكشف': item.list
                 }));
                 const hashdWs = XLSX.utils.json_to_sheet(hashdData);
                 XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
@@ -1189,7 +1365,8 @@
                     'الرقم القومي': item.nationalId,
                     'تاريخ ووقت الانتخاب': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع المقر': item.location
+                    'موقع المقر': item.location,
+                    'نقطة الحشد': item.hashdPoint
                 }));
                 const votesWs = XLSX.utils.json_to_sheet(votesData);
                 XLSX.utils.book_append_sheet(wb, votesWs, 'بيانات الانتخاب');
@@ -1226,6 +1403,30 @@
             });
             const usersWs = XLSX.utils.json_to_sheet(usersData);
             XLSX.utils.book_append_sheet(wb, usersWs, 'المستخدمين');
+
+            // سجلات الدخول
+            if (systemData.loginLogs.length > 0) {
+                const loginData = systemData.loginLogs.map((item, index) => {
+                    const userTypes = {
+                        admin: 'مدير النظام',
+                        hashd: 'مسؤول نقطة الحشد',
+                        maqarr: 'مسؤول المقر الانتخابي',
+                        saraf: 'مسؤول نقطة الصرف',
+                        analytics: 'محلل بيانات'
+                    };
+                    
+                    return {
+                        'الرقم التسلسلي': index + 1,
+                        'اسم المستخدم': item.username,
+                        'نوع المستخدم': userTypes[item.userType],
+                        'الإجراء': item.action,
+                        'الوقت': item.timestamp,
+                        'الموقع': item.location
+                    };
+                });
+                const loginWs = XLSX.utils.json_to_sheet(loginData);
+                XLSX.utils.book_append_sheet(wb, loginWs, 'سجلات الدخول');
+            }
 
             // الإحصائيات الشاملة
             const statsData = [{
@@ -1270,6 +1471,8 @@
             document.getElementById('adminTotalVoted').textContent = totalVoted;
             document.getElementById('adminTotalDispensed').textContent = totalDispensed;
             document.getElementById('adminTurnoutRate').textContent = turnoutRate + '%';
+            
+            loadLoginLogs();
         }
 
         // إظهار التفاصيل عند النقر على البطاقات
