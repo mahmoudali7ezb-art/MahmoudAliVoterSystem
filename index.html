@@ -91,7 +91,6 @@
         }
         
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -233,7 +232,6 @@
         .keyboard-btn {
             width: 70px;
             height: 60px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -251,10 +249,6 @@
         .keyboard-btn:active {
             transform: translateY(0);
         }
-
-        .keyboard-zero {
-            width: 70px;
-        }
         
         .keyboard-middle-row {
             display: flex;
@@ -264,8 +258,7 @@
         }
 
         .keyboard-clear {
-            background: #dc3545;
-            width: 100%;
+            width: 220px;
             margin-top: 10px;
             padding: 15px;
             font-size: 18px;
@@ -273,8 +266,6 @@
         }
         
         .keyboard-backspace {
-            background: #ffc107;
-            color: #333;
             font-size: 20px;
         }
         
@@ -437,6 +428,30 @@
             gap: 10px;
         }
 
+        /* ألوان خاصة بنقطة الحشد */
+        .hashd-color {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        /* ألوان خاصة بالمقر الانتخابي */
+        .maqarr-color {
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+        }
+
+        /* ألوان خاصة بنقطة الصرف */
+        .saraf-color {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        /* ألوان خاصة بالمحلل والمدير */
+        .analytics-color {
+            background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        }
+
+        .admin-color {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -460,11 +475,8 @@
                 font-size: 20px;
             }
             
-            .keyboard-zero {
-                width: 60px;
-            }
-            
             .keyboard-clear {
+                width: 190px;
                 padding: 12px;
                 font-size: 16px;
             }
@@ -502,7 +514,7 @@
                 <label>كلمة المرور</label>
                 <input type="password" id="password" placeholder="أدخل كلمة المرور">
             </div>
-            <button class="btn" onclick="login()">دخول</button>
+            <button class="btn hashd-color" onclick="login()">دخول</button>
         </div>
 
         <!-- واجهة مسؤول نقطة الحشد -->
@@ -515,27 +527,27 @@
                 <label>الرقم القومي (14 رقم)</label>
                 <input type="text" id="hashdNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
-            <button class="btn" onclick="registerVoter()">تسجيل ناخب</button>
+            <button class="btn hashd-color" onclick="registerVoter()">تسجيل ناخب</button>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
                 <div class="keyboard-title">لوحة المفاتيح الرقمية</div>
                 <div class="keyboard-grid">
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '1')">1</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '2')">2</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '3')">3</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '4')">4</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '5')">5</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '6')">6</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '7')">7</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '8')">8</button>
-                    <button class="keyboard-btn" onclick="addToInput('hashdNationalId', '9')">9</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '1')">1</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '2')">2</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '3')">3</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '4')">4</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '5')">5</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '6')">6</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '7')">7</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '8')">8</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '9')">9</button>
                 </div>
                 <div class="keyboard-middle-row">
-                    <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('hashdNationalId')">⌫</button>
-                    <button class="keyboard-btn keyboard-zero" onclick="addToInput('hashdNationalId', '0')">0</button>
+                    <button class="keyboard-btn hashd-color keyboard-backspace" onclick="backspaceInput('hashdNationalId')">⌫</button>
+                    <button class="keyboard-btn hashd-color" onclick="addToInput('hashdNationalId', '0')">0</button>
                 </div>
-                <button class="keyboard-btn keyboard-clear" onclick="clearInput('hashdNationalId')">مسح الكل</button>
+                <button class="keyboard-btn hashd-color keyboard-clear" onclick="clearInput('hashdNationalId')">مسح الرقم</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المسجلين</p>
@@ -553,27 +565,27 @@
                 <label>الرقم القومي</label>
                 <input type="text" id="maqarrNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
-            <button class="btn" onclick="registerVote()">تسجيل انتخاب</button>
+            <button class="btn maqarr-color" onclick="registerVote()">تسجيل انتخاب</button>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
                 <div class="keyboard-title">لوحة المفاتيح الرقمية</div>
                 <div class="keyboard-grid">
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '1')">1</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '2')">2</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '3')">3</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '4')">4</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '5')">5</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '6')">6</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '7')">7</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '8')">8</button>
-                    <button class="keyboard-btn" onclick="addToInput('maqarrNationalId', '9')">9</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '1')">1</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '2')">2</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '3')">3</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '4')">4</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '5')">5</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '6')">6</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '7')">7</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '8')">8</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '9')">9</button>
                 </div>
                 <div class="keyboard-middle-row">
-                    <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('maqarrNationalId')">⌫</button>
-                    <button class="keyboard-btn keyboard-zero" onclick="addToInput('maqarrNationalId', '0')">0</button>
+                    <button class="keyboard-btn maqarr-color keyboard-backspace" onclick="backspaceInput('maqarrNationalId')">⌫</button>
+                    <button class="keyboard-btn maqarr-color" onclick="addToInput('maqarrNationalId', '0')">0</button>
                 </div>
-                <button class="keyboard-btn keyboard-clear" onclick="clearInput('maqarrNationalId')">مسح الكل</button>
+                <button class="keyboard-btn maqarr-color keyboard-clear" onclick="clearInput('maqarrNationalId')">مسح الرقم</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المنتخبين</p>
@@ -591,27 +603,27 @@
                 <label>الرقم القومي</label>
                 <input type="text" id="sarafNationalId" class="national-id-input" placeholder="أدخل الرقم القومي" maxlength="14">
             </div>
-            <button class="btn" onclick="registerDispense()">تسجيل صرف</button>
+            <button class="btn saraf-color" onclick="registerDispense()">تسجيل صرف</button>
             
             <!-- لوحة المفاتيح الرقمية -->
             <div class="keyboard-container">
                 <div class="keyboard-title">لوحة المفاتيح الرقمية</div>
                 <div class="keyboard-grid">
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '1')">1</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '2')">2</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '3')">3</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '4')">4</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '5')">5</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '6')">6</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '7')">7</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '8')">8</button>
-                    <button class="keyboard-btn" onclick="addToInput('sarafNationalId', '9')">9</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '1')">1</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '2')">2</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '3')">3</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '4')">4</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '5')">5</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '6')">6</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '7')">7</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '8')">8</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '9')">9</button>
                 </div>
                 <div class="keyboard-middle-row">
-                    <button class="keyboard-btn keyboard-backspace" onclick="backspaceInput('sarafNationalId')">⌫</button>
-                    <button class="keyboard-btn keyboard-zero" onclick="addToInput('sarafNationalId', '0')">0</button>
+                    <button class="keyboard-btn saraf-color keyboard-backspace" onclick="backspaceInput('sarafNationalId')">⌫</button>
+                    <button class="keyboard-btn saraf-color" onclick="addToInput('sarafNationalId', '0')">0</button>
                 </div>
-                <button class="keyboard-btn keyboard-clear" onclick="clearInput('sarafNationalId')">مسح الكل</button>
+                <button class="keyboard-btn saraf-color keyboard-clear" onclick="clearInput('sarafNationalId')">مسح الرقم</button>
             </div>
             <div class="counter">
                 <p>عدد المواطنين المصروف لهم</p>
@@ -643,8 +655,9 @@
                     <h2 id="turnoutRate">0%</h2>
                 </div>
             </div>
-            <button class="btn" onclick="refreshAnalytics()" style="margin-top: 20px;">تحديث البيانات</button>
+            <button class="btn analytics-color" onclick="refreshAnalytics()" style="margin-top: 20px;">تحديث البيانات</button>
             <button class="btn-export" onclick="exportAllData()">📊 تصدير جميع البيانات إلى Excel</button>
+            <button class="btn-export" onclick="exportLoginLogs()">📋 تصدير سجلات الدخول إلى Excel</button>
         </div>
 
         <!-- واجهة المدير -->
@@ -678,7 +691,7 @@
                     <label>اسم النقطة/المقر</label>
                     <input type="text" id="locationName" placeholder="اسم النقطة أو المقر">
                 </div>
-                <button class="btn" onclick="addUser()">إضافة مستخدم</button>
+                <button class="btn admin-color" onclick="addUser()">إضافة مستخدم</button>
             </div>
 
             <div class="user-list">
@@ -688,6 +701,7 @@
 
             <div style="margin-top: 30px;">
                 <h3>سجلات الدخول والخروج</h3>
+                <button class="btn-export" onclick="exportLoginLogs()">📋 تصدير سجلات الدخول إلى Excel</button>
                 <div id="loginLogsList"></div>
             </div>
 
@@ -697,7 +711,7 @@
                     <label>رفع ملف Excel</label>
                     <input type="file" id="excelFile" accept=".xlsx, .xls">
                 </div>
-                <button class="btn" onclick="importCitizenData()">استيراد البيانات</button>
+                <button class="btn admin-color" onclick="importCitizenData()">استيراد البيانات</button>
                 <p style="margin-top: 10px; color: #666; font-size: 14px;">
                     يجب أن يحتوي الملف على الأعمدة التالية: الرقم القومي، اسم المواطن، المقر الانتخابي، رقم اللجنة، رقم الكشف
                 </p>
@@ -736,7 +750,7 @@
                     <h2 id="adminTurnoutRate">0%</h2>
                 </div>
             </div>
-            <button class="btn" onclick="refreshAdminData()" style="margin-top: 20px;">تحديث البيانات</button>
+            <button class="btn admin-color" onclick="refreshAdminData()" style="margin-top: 20px;">تحديث البيانات</button>
             <button class="btn-export" onclick="exportCompleteReport()">📊 تصدير التقرير الشامل إلى Excel</button>
         </div>
 
@@ -786,7 +800,7 @@
                 <label>اسم النقطة/المقر</label>
                 <input type="text" id="editLocationName" placeholder="اسم النقطة أو المقر">
             </div>
-            <button class="btn" onclick="updateUser()">حفظ التعديلات</button>
+            <button class="btn admin-color" onclick="updateUser()">حفظ التعديلات</button>
         </div>
     </div>
 
@@ -850,12 +864,12 @@
         // بيانات النظام
         let systemData = {
             users: {
-                مدير: { password: 'مدير123', type: 'admin', location: 'الإدارة العامة' },
-                حشد1: { password: 'حشد123', type: 'hashd', location: 'نقطة الحشد 1' },
-                مقر1: { password: 'مقر123', type: 'maqarr', location: 'مدرسة مدينة نصر الثانوية' },
-                صرف1: { password: 'صرف123', type: 'saraf', location: 'نقطة الصرف 1' },
-                تحليل: { password: 'تحليل123', type: 'analytics', location: 'قسم البيانات' },
-                مشرف1: { password: 'مشرف123', type: 'supervisor', location: 'مشرف عام' }
+                مدير: { password: '123456', type: 'admin', location: 'الإدارة العامة' },
+                حشد1: { password: '123456', type: 'hashd', location: 'نقطة الحشد 1' },
+                مقر1: { password: '123456', type: 'maqarr', location: 'مدرسة مدينة نصر الثانوية' },
+                صرف1: { password: '123456', type: 'saraf', location: 'نقطة الصرف 1' },
+                تحليل: { password: '123456', type: 'analytics', location: 'قسم البيانات' },
+                مشرف1: { password: '123456', type: 'supervisor', location: 'مشرف عام' }
             },
             registrations: [], // تسجيلات الحشد
             votes: [], // تسجيلات الانتخاب
@@ -943,7 +957,8 @@
                     action: 'دخول',
                     timestamp: getCurrentDateTime(),
                     userType: systemData.users[username].type,
-                    location: systemData.users[username].location
+                    location: systemData.users[username].location,
+                    deviceInfo: getDeviceInfo()
                 });
                 
                 hideAllPages();
@@ -969,7 +984,7 @@
                         updateSarafCounter();
                         break;
                     case 'analytics':
-                        document.getElementById('analyticsPage').classList.remove('hidden');
+                        document.getElementById('analyticsPage').classlist.remove('hidden');
                         refreshAnalytics();
                         break;
                     case 'supervisor':
@@ -985,6 +1000,17 @@
             }
         }
 
+        // الحصول على معلومات الجهاز
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: `${window.screen.width}x${window.screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+
         // تسجيل الخروج
         function logout() {
             // تسجيل عملية الخروج
@@ -994,7 +1020,8 @@
                     action: 'خروج',
                     timestamp: getCurrentDateTime(),
                     userType: systemData.users[systemData.currentUser].type,
-                    location: systemData.users[systemData.currentUser].location
+                    location: systemData.users[systemData.currentUser].location,
+                    deviceInfo: getDeviceInfo()
                 });
             }
             
@@ -1287,6 +1314,7 @@
                     <th>الإجراء</th>
                     <th>الوقت</th>
                     <th>الموقع</th>
+                    <th>معلومات الجهاز</th>
                 </tr>
             `;
             
@@ -1310,6 +1338,7 @@
                     <td>${log.action}</td>
                     <td>${log.timestamp}</td>
                     <td>${log.location}</td>
+                    <td>${log.deviceInfo ? log.deviceInfo.platform : 'غير معروف'}</td>
                 `;
                 table.appendChild(row);
             });
@@ -1345,6 +1374,7 @@
                         <th>الإجراء</th>
                         <th>الوقت</th>
                         <th>الموقع</th>
+                        <th>معلومات الجهاز</th>
                     </tr>
                 `;
                 
@@ -1367,6 +1397,7 @@
                         <td>${log.action}</td>
                         <td>${log.timestamp}</td>
                         <td>${log.location}</td>
+                        <td>${log.deviceInfo ? `${log.deviceInfo.platform} - ${log.deviceInfo.screen}` : 'غير معروف'}</td>
                     `;
                     table.appendChild(row);
                 });
@@ -1450,6 +1481,44 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, sheetName);
             XLSX.writeFile(wb, filename);
+        }
+
+        // تصدير سجلات الدخول
+        function exportLoginLogs() {
+            if (systemData.loginLogs.length === 0) {
+                showPopup('لا توجد سجلات دخول للتصدير', 'error');
+                return;
+            }
+
+            const loginData = systemData.loginLogs.map((item, index) => {
+                const userTypes = {
+                    admin: 'مدير النظام',
+                    hashd: 'مسؤول نقطة الحشد',
+                    maqarr: 'مسؤول المقر الانتخابي',
+                    saraf: 'مسؤول نقطة الصرف',
+                    analytics: 'محلل بيانات',
+                    supervisor: 'مشرف'
+                };
+                
+                return {
+                    'الرقم التسلسلي': index + 1,
+                    'اسم المستخدم': item.username,
+                    'نوع المستخدم': userTypes[item.userType],
+                    'الإجراء': item.action,
+                    'الوقت': item.timestamp,
+                    'الموقع': item.location,
+                    'نظام التشغيل': item.deviceInfo ? item.deviceInfo.platform : 'غير معروف',
+                    'لغة المتصفح': item.deviceInfo ? item.deviceInfo.language : 'غير معروف',
+                    'دقة الشاشة': item.deviceInfo ? item.deviceInfo.screen : 'غير معروف',
+                    'المنطقة الزمنية': item.deviceInfo ? item.deviceInfo.timezone : 'غير معروف',
+                    'وكيل المستخدم': item.deviceInfo ? item.deviceInfo.userAgent : 'غير معروف'
+                };
+            });
+            
+            const filename = `سجلات_الدخول_${getCurrentDateTimeForFileName()}.xlsx`;
+            exportToExcel(loginData, filename, 'سجلات الدخول');
+            
+            showPopup('تم تصدير سجلات الدخول بنجاح');
         }
 
         // تصدير جميع البيانات (محلل البيانات)
@@ -1618,7 +1687,10 @@
                         'نوع المستخدم': userTypes[item.userType],
                         'الإجراء': item.action,
                         'الوقت': item.timestamp,
-                        'الموقع': item.location
+                        'الموقع': item.location,
+                        'نظام التشغيل': item.deviceInfo ? item.deviceInfo.platform : 'غير معروف',
+                        'لغة المتصفح': item.deviceInfo ? item.deviceInfo.language : 'غير معروف',
+                        'دقة الشاشة': item.deviceInfo ? item.deviceInfo.screen : 'غير معروف'
                     };
                 });
                 const loginWs = XLSX.utils.json_to_sheet(loginData);
