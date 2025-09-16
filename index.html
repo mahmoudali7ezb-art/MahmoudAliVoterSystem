@@ -225,19 +225,19 @@
 
         .keyboard-grid {
             display: inline-grid;
-            grid-template-columns: repeat(3, 60px);
+            grid-template-columns: repeat(3, 70px);
             gap: 10px;
             margin-bottom: 10px;
         }
 
         .keyboard-btn {
-            width: 60px;
-            height: 50px;
+            width: 70px;
+            height: 60px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s;
@@ -253,7 +253,7 @@
         }
 
         .keyboard-zero {
-            width: 60px;
+            width: 70px;
         }
         
         .keyboard-middle-row {
@@ -267,12 +267,15 @@
             background: #dc3545;
             width: 100%;
             margin-top: 10px;
-            padding: 12px;
+            padding: 15px;
+            font-size: 18px;
+            height: auto;
         }
         
         .keyboard-backspace {
             background: #ffc107;
             color: #333;
+            font-size: 20px;
         }
         
         .national-id-input {
@@ -376,7 +379,64 @@
         .user-details-table th {
             background-color: #f8f9fa;
         }
-        
+
+        .close-popup-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .import-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .backup-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .backup-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .backup-btn {
+            background: #6f42c1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .restore-btn {
+            background: #20c997;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .auto-backup {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -395,18 +455,27 @@
             }
             
             .keyboard-btn {
-                width: 50px;
-                height: 45px;
-                font-size: 16px;
+                width: 60px;
+                height: 55px;
+                font-size: 20px;
             }
             
             .keyboard-zero {
-                width: 50px;
+                width: 60px;
+            }
+            
+            .keyboard-clear {
+                padding: 12px;
+                font-size: 16px;
             }
             
             .user-actions {
                 flex-direction: column;
                 gap: 5px;
+            }
+
+            .backup-controls {
+                flex-direction: column;
             }
         }
     </style>
@@ -602,6 +671,7 @@
                         <option value="maqarr">مسؤول المقر الانتخابي</option>
                         <option value="saraf">مسؤول نقطة الصرف</option>
                         <option value="analytics">محلل بيانات</option>
+                        <option value="supervisor">مشرف</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -619,6 +689,33 @@
             <div style="margin-top: 30px;">
                 <h3>سجلات الدخول والخروج</h3>
                 <div id="loginLogsList"></div>
+            </div>
+
+            <div class="import-section">
+                <h3>استيراد بيانات المواطنين</h3>
+                <div class="form-group">
+                    <label>رفع ملف Excel</label>
+                    <input type="file" id="excelFile" accept=".xlsx, .xls">
+                </div>
+                <button class="btn" onclick="importCitizenData()">استيراد البيانات</button>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                    يجب أن يحتوي الملف على الأعمدة التالية: الرقم القومي، اسم المواطن، المقر الانتخابي، رقم اللجنة، رقم الكشف
+                </p>
+            </div>
+
+            <div class="backup-section">
+                <h3>النسخ الاحتياطي والاستعادة</h3>
+                <p>آخر نسخة احتياطية: <span id="lastBackupTime">لم يتم إنشاء نسخة بعد</span></p>
+                
+                <div class="backup-controls">
+                    <button class="backup-btn" onclick="createBackup()">إنشاء نسخة احتياطية الآن</button>
+                    <button class="restore-btn" onclick="restoreBackup()">استعادة من نسخة احتياطية</button>
+                </div>
+                
+                <div class="auto-backup">
+                    <input type="checkbox" id="autoBackup" onchange="toggleAutoBackup()">
+                    <label for="autoBackup">النسخ الاحتياطي التلقائي كل 30 دقيقة</label>
+                </div>
             </div>
 
             <div class="stats-grid" style="margin-top: 30px;">
@@ -682,6 +779,7 @@
                     <option value="maqarr">مسؤول المقر الانتخابي</option>
                     <option value="saraf">مسؤول نقطة الصرف</option>
                     <option value="analytics">محلل بيانات</option>
+                    <option value="supervisor">مشرف</option>
                 </select>
             </div>
             <div class="form-group">
@@ -698,6 +796,7 @@
             <div id="popupIcon" class="popup-icon"></div>
             <h3 id="popupText"></h3>
             <div id="popupDetails" style="text-align: right; margin-top: 20px;"></div>
+            <button id="closePopupBtn" class="close-popup-btn" onclick="closePopup()">موافق</button>
         </div>
     </div>
 
@@ -725,27 +824,23 @@
             const popupIcon = document.getElementById('popupIcon');
             const popupText = document.getElementById('popupText');
             const popupDetails = document.getElementById('popupDetails');
+            const closePopupBtn = document.getElementById('closePopupBtn');
             
             popupIcon.className = 'popup-icon';
             if (type === 'success') {
                 popupIcon.classList.add('popup-success');
                 popupIcon.innerHTML = '✅';
+                closePopupBtn.style.background = '#28a745';
             } else {
                 popupIcon.classList.add('popup-error');
                 popupIcon.innerHTML = '❌';
+                closePopupBtn.style.background = '#dc3545';
             }
             
             popupText.textContent = message;
             popupDetails.innerHTML = details;
             
             popup.classList.remove('hidden');
-            
-            // إخفاء الرسالة تلقائياً بعد 3 ثواني
-            setTimeout(() => {
-                if (!popup.classList.contains('hidden')) {
-                    closePopup();
-                }
-            }, 3000);
         }
 
         function closePopup() {
@@ -757,16 +852,20 @@
             users: {
                 مدير: { password: 'مدير123', type: 'admin', location: 'الإدارة العامة' },
                 حشد1: { password: 'حشد123', type: 'hashd', location: 'نقطة الحشد 1' },
-                مقر1: { password: 'مقر123', type: 'maqarr', location: 'المقر الانتخابي 1' },
+                مقر1: { password: 'مقر123', type: 'maqarr', location: 'مدرسة مدينة نصر الثانوية' },
                 صرف1: { password: 'صرف123', type: 'saraf', location: 'نقطة الصرف 1' },
-                تحليل: { password: 'تحليل123', type: 'analytics', location: 'قسم البيانات' }
+                تحليل: { password: 'تحليل123', type: 'analytics', location: 'قسم البيانات' },
+                مشرف1: { password: 'مشرف123', type: 'supervisor', location: 'مشرف عام' }
             },
             registrations: [], // تسجيلات الحشد
             votes: [], // تسجيلات الانتخاب
             dispenses: [], // تسجيلات الصرف
             loginLogs: [], // سجلات الدخول والخروج
+            citizenData: {}, // بيانات المواطنين المستوردة
             currentUser: null,
-            editingUser: null
+            editingUser: null,
+            autoBackupInterval: null,
+            lastBackupTime: null
         };
 
         // وظائف مساعدة
@@ -775,7 +874,18 @@
         }
 
         function getCurrentDateTime() {
-            return new Date().toLocaleString('ar-EG');
+            const now = new Date();
+            return now.toLocaleString('ar-EG');
+        }
+
+        function getCurrentDateTimeForFileName() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day}_${hours}-${minutes}`;
         }
 
         function hideAllPages() {
@@ -783,6 +893,35 @@
             pages.forEach(page => {
                 document.getElementById(page).classList.add('hidden');
             });
+        }
+
+        // توليد اسم عشوائي (لأغراض العرض فقط)
+        function generateRandomName() {
+            const firstNames = ['أحمد', 'محمد', 'علي', 'محمود', 'مصطفى', 'خالد', 'عمر', 'ياسين', 'إبراهيم', 'حسن'];
+            const lastNames = ['علي', 'حسن', 'إبراهيم', 'محمود', 'عبدالله', 'سعيد', 'فاروق', 'ناصر', 'شعبان', 'مرعي'];
+            return firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+        }
+
+        // توليد بيانات مقر انتخابي عشوائي
+        function generateRandomSchool() {
+            const schools = [
+                'مدرسة مدينة نصر الثانوية',
+                'مدرسة النصر الإعدادية',
+                'مدرسة المستقبل الابتدائية',
+                'مدرسة الحرية الثانوية',
+                'مدرسة الأمل الإعدادية'
+            ];
+            return schools[Math.floor(Math.random() * schools.length)];
+        }
+
+        // توليد رقم لجنة عشوائي
+        function generateRandomCommittee() {
+            return Math.floor(Math.random() * 20) + 1;
+        }
+
+        // توليد رقم كشف عشوائي
+        function generateRandomList() {
+            return Math.floor(Math.random() * 10) + 1;
         }
 
         // تسجيل الدخول
@@ -833,7 +972,14 @@
                         document.getElementById('analyticsPage').classList.remove('hidden');
                         refreshAnalytics();
                         break;
+                    case 'supervisor':
+                        document.getElementById('analyticsPage').classList.remove('hidden');
+                        refreshAnalytics();
+                        break;
                 }
+
+                // حفظ البيانات بعد تسجيل الدخول
+                saveDataToLocalStorage();
             } else {
                 showPopup('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
             }
@@ -858,6 +1004,9 @@
             // إعادة تعيين النماذج
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+
+            // حفظ البيانات بعد تسجيل الخروج
+            saveDataToLocalStorage();
         }
 
         // تسجيل ناخب في الحشد
@@ -869,10 +1018,31 @@
                 return;
             }
 
-            // توليد بيانات عشوائية للعرض (في نظام حقيقي، هذه البيانات ستأتي من قاعدة بيانات)
-            const citizenName = generateRandomName();
-            const randomCommittee = Math.floor(Math.random() * 20) + 1;
-            const randomList = Math.floor(Math.random() * 10) + 1;
+            // التحقق من عدم تسجيل نفس الرقم القومي اليوم
+            const today = new Date().toDateString();
+            const alreadyRegistered = systemData.registrations.find(r => 
+                r.nationalId === nationalId && new Date(r.timestamp).toDateString() === today
+            );
+            
+            if (alreadyRegistered) {
+                showPopup('تم تسجيل هذا الرقم القومي اليوم مسبقًا', 'error');
+                return;
+            }
+
+            // استخدام البيانات المستوردة إذا كانت متاحة، أو توليد بيانات عشوائية
+            let citizenName, committee, list, school;
+            
+            if (systemData.citizenData[nationalId]) {
+                citizenName = systemData.citizenData[nationalId].name;
+                committee = systemData.citizenData[nationalId].committee;
+                list = systemData.citizenData[nationalId].list;
+                school = systemData.citizenData[nationalId].school;
+            } else {
+                citizenName = generateRandomName();
+                committee = generateRandomCommittee();
+                list = generateRandomList();
+                school = generateRandomSchool();
+            }
             
             const registration = {
                 nationalId: nationalId,
@@ -880,8 +1050,9 @@
                 user: systemData.currentUser,
                 location: systemData.users[systemData.currentUser].location,
                 citizenName: citizenName,
-                committee: randomCommittee,
-                list: randomList
+                committee: committee,
+                list: list,
+                school: school
             };
 
             systemData.registrations.push(registration);
@@ -891,22 +1062,18 @@
                 <div style="text-align: right; direction: rtl;">
                     <p><strong>اسم المواطن:</strong> ${citizenName}</p>
                     <p><strong>رقم قومي:</strong> ${nationalId}</p>
-                    <p><strong>المقر الانتخابي:</strong> ${systemData.users[systemData.currentUser].location}</p>
-                    <p><strong>رقم اللجنة:</strong> ${randomCommittee}</p>
-                    <p><strong>رقم الكشف:</strong> ${randomList}</p>
+                    <p><strong>المقر الانتخابي:</strong> ${school}</p>
+                    <p><strong>رقم اللجنة:</strong> ${committee}</p>
+                    <p><strong>رقم الكشف:</strong> ${list}</p>
                 </div>
             `;
             
             showPopup('تم تسجيل المواطن بنجاح', 'success', details);
             document.getElementById('hashdNationalId').value = '';
             updateHashdCounter();
-        }
 
-        // توليد اسم عشوائي (لأغراض العرض فقط)
-        function generateRandomName() {
-            const firstNames = ['أحمد', 'محمد', 'علي', 'محمود', 'مصطفى', 'خالد', 'عمر', 'ياسين', 'إبراهيم', 'حسن'];
-            const lastNames = ['علي', 'حسن', 'إبراهيم', 'محمود', 'عبدالله', 'سعيد', 'فاروق', 'ناصر', 'شعبان', 'مرعي'];
-            return firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+            // حفظ البيانات بعد التسجيل
+            saveDataToLocalStorage();
         }
 
         // تحديث عداد الحشد
@@ -927,6 +1094,11 @@
             // البحث عن التسجيل في الحشد
             const registration = systemData.registrations.find(r => r.nationalId === nationalId);
             
+            if (!registration) {
+                showPopup('هذا المواطن غير مسجل في نقطة الحشد', 'error');
+                return;
+            }
+
             // التحقق من الانتخاب المسبق
             const alreadyVoted = systemData.votes.find(v => v.nationalId === nationalId);
             if (alreadyVoted) {
@@ -957,6 +1129,9 @@
             showPopup('تم تسجيل الانتخاب بنجاح', 'success', details);
             document.getElementById('maqarrNationalId').value = '';
             updateMaqarrCounter();
+
+            // حفظ البيانات بعد التسجيل
+            saveDataToLocalStorage();
         }
 
         // تحديث عداد الانتخاب
@@ -971,6 +1146,7 @@
             
             if (!validateNationalId(nationalId)) {
                 showPopup('الرقم القومي غير صحيح - يجب أن يكون 14 رقمًا', 'error');
+                document.getElementById('sarafNationalId').value = '';
                 return;
             }
 
@@ -978,6 +1154,7 @@
             const voted = systemData.votes.find(v => v.nationalId === nationalId);
             if (!voted) {
                 showPopup('لم يقم بالانتخاب', 'error');
+                document.getElementById('sarafNationalId').value = '';
                 return;
             }
 
@@ -985,6 +1162,7 @@
             const alreadyDispensed = systemData.dispenses.find(d => d.nationalId === nationalId);
             if (alreadyDispensed) {
                 showPopup(`تم الصرف مسبقًا الساعة ${alreadyDispensed.timestamp}`, 'error');
+                document.getElementById('sarafNationalId').value = '';
                 return;
             }
 
@@ -996,9 +1174,12 @@
             };
 
             systemData.dispenses.push(dispense);
-            showPopup('تم تسجيل الصرف بنجاح');
+            showPopup('تم تسجيل الصرف بنجاح', 'success');
             document.getElementById('sarafNationalId').value = '';
             updateSarafCounter();
+
+            // حفظ البيانات بعد التسجيل
+            saveDataToLocalStorage();
         }
 
         // تحديث عداد الصرف
@@ -1051,6 +1232,9 @@
             document.getElementById('locationName').value = '';
             
             loadUsersList();
+
+            // حفظ البيانات بعد إضافة المستخدم
+            saveDataToLocalStorage();
         }
 
         // تحميل قائمة المستخدمين
@@ -1064,7 +1248,8 @@
                     hashd: 'مسؤول نقطة الحشد',
                     maqarr: 'مسؤول المقر الانتخابي',
                     saraf: 'مسؤول نقطة الصرف',
-                    analytics: 'محلل بيانات'
+                    analytics: 'محلل بيانات',
+                    supervisor: 'مشرف'
                 };
 
                 const userItem = document.createElement('div');
@@ -1114,7 +1299,8 @@
                     hashd: 'مسؤول نقطة الحشد',
                     maqarr: 'مسؤول المقر الانتخابي',
                     saraf: 'مسؤول نقطة الصرف',
-                    analytics: 'محلل بيانات'
+                    analytics: 'محلل بيانات',
+                    supervisor: 'مشرف'
                 };
                 
                 const row = document.createElement('tr');
@@ -1170,7 +1356,8 @@
                         hashd: 'مسؤول نقطة الحشد',
                         maqarr: 'مسؤول المقر الانتخابي',
                         saraf: 'مسؤول نقطة الصرف',
-                        analytics: 'محلل بيانات'
+                        analytics: 'محلل بيانات',
+                        supervisor: 'مشرف'
                     };
                     
                     const row = document.createElement('tr');
@@ -1228,6 +1415,9 @@
             setTimeout(() => {
                 closeEditModal();
                 loadUsersList();
+                
+                // حفظ البيانات بعد التعديل
+                saveDataToLocalStorage();
             }, 1500);
         }
 
@@ -1248,6 +1438,9 @@
                 delete systemData.users[username];
                 showPopup('تم حذف المستخدم بنجاح');
                 loadUsersList();
+                
+                // حفظ البيانات بعد الحذف
+                saveDataToLocalStorage();
             }
         }
 
@@ -1274,11 +1467,12 @@
                     'الرقم التسلسلي': index + 1,
                     'الرقم القومي': item.nationalId,
                     'اسم المواطن': item.citizenName,
+                    'المقر الانتخابي': item.school,
+                    'رقم اللجنة': item.committee,
+                    'رقم الكشف': item.list,
                     'تاريخ ووقت التسجيل': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع النقطة': item.location,
-                    'رقم اللجنة': item.committee,
-                    'رقم الكشف': item.list
+                    'موقع النقطة': item.location
                 }));
                 const hashdWs = XLSX.utils.json_to_sheet(hashdData);
                 XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
@@ -1332,7 +1526,7 @@
             const statsWs = XLSX.utils.json_to_sheet(statsData);
             XLSX.utils.book_append_sheet(wb, statsWs, 'الإحصائيات');
 
-            const filename = `تقرير_شامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
+            const filename = `انتخابات_النواب_${getCurrentDateTimeForFileName()}.xlsx`;
             XLSX.writeFile(wb, filename);
             
             showPopup('تم تصدير جميع البيانات بنجاح');
@@ -1348,11 +1542,12 @@
                     'الرقم التسلسلي': index + 1,
                     'الرقم القومي': item.nationalId,
                     'اسم المواطن': item.citizenName,
+                    'المقر الانتخابي': item.school,
+                    'رقم اللجنة': item.committee,
+                    'رقم الكشف': item.list,
                     'تاريخ ووقت التسجيل': item.timestamp,
                     'المستخدم': item.user,
-                    'موقع النقطة': item.location,
-                    'رقم اللجنة': item.committee,
-                    'رقم الكشف': item.list
+                    'موقع النقطة': item.location
                 }));
                 const hashdWs = XLSX.utils.json_to_sheet(hashdData);
                 XLSX.utils.book_append_sheet(wb, hashdWs, 'بيانات الحشد');
@@ -1392,7 +1587,8 @@
                     hashd: 'مسؤول نقطة الحشد',
                     maqarr: 'مسؤول المقر الانتخابي',
                     saraf: 'مسؤول نقطة الصرف',
-                    analytics: 'محلل بيانات'
+                    analytics: 'محلل بيانات',
+                    supervisor: 'مشرف'
                 };
                 
                 return {
@@ -1412,7 +1608,8 @@
                         hashd: 'مسؤول نقطة الحشد',
                         maqarr: 'مسؤول المقر الانتخابي',
                         saraf: 'مسؤول نقطة الصرف',
-                        analytics: 'محلل بيانات'
+                        analytics: 'محلل بيانات',
+                        supervisor: 'مشرف'
                     };
                     
                     return {
@@ -1452,7 +1649,7 @@
             const statsWs = XLSX.utils.json_to_sheet(statsData);
             XLSX.utils.book_append_sheet(wb, statsWs, 'الإحصائيات الشاملة');
 
-            const filename = `التقرير_الإداري_الشامل_${new Date().toLocaleDateString('ar-EG').replace(/\//g, '-')}.xlsx`;
+            const filename = `انتخابات_النواب_${getCurrentDateTimeForFileName()}.xlsx`;
             XLSX.writeFile(wb, filename);
             
             showPopup('تم تصدير التقرير الشامل بنجاح');
@@ -1555,8 +1752,213 @@
             document.getElementById('detailsModal').classList.add('hidden');
         }
 
+        // استيراد بيانات المواطنين من Excel
+        function importCitizenData() {
+            const fileInput = document.getElementById('excelFile');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showPopup('يرجى اختيار ملف Excel', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // الحصول على الورقة الأولى
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    // مسح البيانات القديمة
+                    systemData.citizenData = {};
+                    
+                    // معالجة البيانات
+                    let importedCount = 0;
+                    jsonData.forEach(row => {
+                        const nationalId = String(row['الرقم القومي']).trim();
+                        const name = row['اسم المواطن'];
+                        const school = row['المقر الانتخابي'];
+                        const committee = row['رقم اللجنة'];
+                        const list = row['رقم الكشف'];
+                        
+                        if (nationalId && nationalId.length === 14 && /^\d+$/.test(nationalId)) {
+                            systemData.citizenData[nationalId] = {
+                                name: name || 'غير معروف',
+                                school: school || 'غير معروف',
+                                committee: committee || 1,
+                                list: list || 1
+                            };
+                            importedCount++;
+                        }
+                    });
+                    
+                    showPopup(`تم استيراد ${importedCount} مواطن بنجاح`, 'success');
+                    fileInput.value = '';
+                    
+                    // حفظ البيانات بعد الاستيراد
+                    saveDataToLocalStorage();
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    showPopup('حدث خطأ أثناء استيراد البيانات', 'error');
+                }
+            };
+            
+            reader.onerror = function() {
+                showPopup('حدث خطأ أثناء قراءة الملف', 'error');
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+
+        // حفظ البيانات في LocalStorage
+        function saveDataToLocalStorage() {
+            try {
+                localStorage.setItem('voterSystemData', JSON.stringify(systemData));
+            } catch (error) {
+                console.error('Error saving data to localStorage:', error);
+            }
+        }
+
+        // تحميل البيانات من LocalStorage
+        function loadDataFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('voterSystemData');
+                if (savedData) {
+                    const parsedData = JSON.parse(savedData);
+                    
+                    // دمج البيانات المحفوظة مع البيانات الافتراضية
+                    if (parsedData.users) systemData.users = {...systemData.users, ...parsedData.users};
+                    if (parsedData.registrations) systemData.registrations = parsedData.registrations;
+                    if (parsedData.votes) systemData.votes = parsedData.votes;
+                    if (parsedData.dispenses) systemData.dispenses = parsedData.dispenses;
+                    if (parsedData.loginLogs) systemData.loginLogs = parsedData.loginLogs;
+                    if (parsedData.citizenData) systemData.citizenData = parsedData.citizenData;
+                    if (parsedData.lastBackupTime) systemData.lastBackupTime = parsedData.lastBackupTime;
+                    
+                    // تحديث وقت آخر نسخة احتياطية
+                    if (systemData.lastBackupTime) {
+                        document.getElementById('lastBackupTime').textContent = systemData.lastBackupTime;
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading data from localStorage:', error);
+            }
+        }
+
+        // إنشاء نسخة احتياطية
+        function createBackup() {
+            try {
+                const dataStr = JSON.stringify(systemData);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                
+                // محاولة استخدام FileSaver.js أو طريقة بديلة لحفظ الملف
+                const url = URL.createObjectURL(dataBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `نسخة_احتياطية_${getCurrentDateTimeForFileName()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // تحديث وقت آخر نسخة احتياطية
+                systemData.lastBackupTime = getCurrentDateTime();
+                document.getElementById('lastBackupTime').textContent = systemData.lastBackupTime;
+                
+                showPopup('تم إنشاء النسخة الاحتياطية بنجاح', 'success');
+                
+                // حفظ وقت النسخة الاحتياطية
+                saveDataToLocalStorage();
+            } catch (error) {
+                console.error('Error creating backup:', error);
+                showPopup('حدث خطأ أثناء إنشاء النسخة الاحتياطية', 'error');
+            }
+        }
+
+        // استعادة من نسخة احتياطية
+        function restoreBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        
+                        // استبدال البيانات الحالية بالبيانات المستعادة
+                        if (backupData.users) systemData.users = backupData.users;
+                        if (backupData.registrations) systemData.registrations = backupData.registrations;
+                        if (backupData.votes) systemData.votes = backupData.votes;
+                        if (backupData.dispenses) systemData.dispenses = backupData.dispenses;
+                        if (backupData.loginLogs) systemData.loginLogs = backupData.loginLogs;
+                        if (backupData.citizenData) systemData.citizenData = backupData.citizenData;
+                        if (backupData.lastBackupTime) {
+                            systemData.lastBackupTime = backupData.lastBackupTime;
+                            document.getElementById('lastBackupTime').textContent = systemData.lastBackupTime;
+                        }
+                        
+                        // حفظ البيانات المستعادة
+                        saveDataToLocalStorage();
+                        
+                        showPopup('تم استعادة النسخة الاحتياطية بنجاح', 'success');
+                        
+                        // إعادة تحميل واجهة المدير إذا كان المستخدم الحالي هو المدير
+                        if (systemData.currentUser && systemData.users[systemData.currentUser].type === 'admin') {
+                            loadUsersList();
+                            loadLoginLogs();
+                            refreshAdminData();
+                        }
+                    } catch (error) {
+                        console.error('Error restoring backup:', error);
+                        showPopup('حدث خطأ أثناء استعادة النسخة الاحتياطية', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        // تفعيل/تعطيل النسخ الاحتياطي التلقائي
+        function toggleAutoBackup() {
+            const autoBackupCheckbox = document.getElementById('autoBackup');
+            
+            if (autoBackupCheckbox.checked) {
+                // تفعيل النسخ الاحتياطي التلقائي كل 30 دقيقة
+                systemData.autoBackupInterval = setInterval(() => {
+                    createBackup();
+                }, 30 * 60 * 1000); // 30 دقيقة
+                
+                showPopup('تم تفعيل النسخ الاحتياطي التلقائي', 'success');
+            } else {
+                // إيقاف النسخ الاحتياطي التلقائي
+                if (systemData.autoBackupInterval) {
+                    clearInterval(systemData.autoBackupInterval);
+                    systemData.autoBackupInterval = null;
+                }
+                
+                showPopup('تم إيقاف النسخ الاحتياطي التلقائي', 'success');
+            }
+            
+            // حفظ إعدادات النسخ الاحتياطي
+            saveDataToLocalStorage();
+        }
+
         // السماح بالضغط على Enter لتسجيل الدخول
         document.addEventListener('DOMContentLoaded', function() {
+            // تحميل البيانات المحفوظة
+            loadDataFromLocalStorage();
+            
             document.getElementById('password').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     login();
@@ -1570,6 +1972,12 @@
                     this.value = this.value.replace(/[^0-9]/g, '');
                 });
             });
+            
+            // التحقق من وجود نسخ احتياطي تلقائي سابق
+            const autoBackupCheckbox = document.getElementById('autoBackup');
+            if (systemData.autoBackupInterval) {
+                autoBackupCheckbox.checked = true;
+            }
         });
     </script>
 </body>
